@@ -1,10 +1,9 @@
-# To-Do List App (Laravel)
 - PHP 8.4+
 ## Setup
 
 1. **Clone the repository**
    ```bash
-   git clone <your-repo-url>
+   git clone https://github.com/artgolwebdev/laravel13todoapp.git
    cd todo-app
    ```
 
@@ -19,18 +18,6 @@
    ```bash
    cp .env.example .env
    ```
-
-   Then set your MySQL credentials in `.env`:
-   ```
-   DB_CONNECTION=mysql
-   DB_HOST=127.0.0.1
-   DB_PORT=3306
-   DB_DATABASE=todo_app
-   DB_USERNAME=root
-   DB_PASSWORD=
-   ```
-
-   Make sure the `todo_app` database exists in MySQL before migrating.
 
 4. **Generate app key**
    ```bash
