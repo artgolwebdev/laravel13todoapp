@@ -4,8 +4,8 @@ $.ajaxSetup({
     }
 });
 window.tasksListHolder = $('#tasksList');
+// build task html inside the list
 function buildTaskList(task){
-    //$(tasksListHolder).html('');
     var className = (task.isDone == 1) ? 'bg-success' : '';
     var taskHtml = `<li class="list-group-item ${className}">
                         <div class="d-flex justify-content-between">
@@ -13,6 +13,9 @@ function buildTaskList(task){
                                 <input class="form-check-input toggleStatus" data-taskid="${task.id}" type="checkbox" ${task.isDone == true ? 'checked' : ''} >
                                 <label class="form-check-label" for="flexSwitchCheckDefault">${task.taskname}</label>
                         </div>
+                             <div class="editTaskBtn" data-taskid="${task.id}">
+                                <button class="btn btn-sm btn-outline btn-secondary">edit</button>
+                            </div>
                             <div class="deleteTaskBtn" data-taskid="${task.id}">
                                 <button class="btn btn-sm btn-outline btn-warning">X</button>
                             </div>
@@ -23,18 +26,12 @@ function buildTaskList(task){
 }
 
 $(document).ready(function() {
-    console.log('hi');
-
-    // Get all task and build list
-    //buildList();
-
 
     // Create new task
     $('#taskForm').on('submit',function(e){
         e.preventDefault();
         var form = $(this);
         var task = $(form).find('input[name="task"]').val();
-        console.log("task : " + task);
         if(!task){
             alert("Task is required");
             return;
@@ -47,7 +44,6 @@ $(document).ready(function() {
                 console.log('created:', task);
                 $(form)[0].reset();
                 buildTaskList(task);
-                //buildList();
             },
             error: function (error) {
                     console.error(error);
@@ -70,7 +66,6 @@ $(document).ready(function() {
                 success : function(response){
                     console.log(response);
                     $(liElement).remove();
-                     //buildList();
                 },
                 error: function (error) {
                     console.error(error);
@@ -83,12 +78,10 @@ $(document).ready(function() {
     $('body').on('click','.toggleStatus' ,function() {
         var taskHTML = $(this);
         var taskId = $(taskHTML).data('taskid');
-        console.log("taskId: "+taskId);
            $.ajax({
                 url: '/tasks/' + taskId + '/toggle',
                 method: 'POST',
                 success : function(response){
-                    console.log(response);
                     $(taskHTML).parent().parent().parent().toggleClass('bg-success');
                 },
                 error: function (error) {
