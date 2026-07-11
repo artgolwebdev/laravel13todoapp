@@ -3,45 +3,30 @@ $.ajaxSetup({
         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
     }
 });
-
-
-function buildList(){
-    var tasksListHolder = $('#tasksList');
-    $(tasksListHolder).html('');
-    var tasks = [];
-    $.ajax({
-        url: APP_URL + '/tasks',
-        method: 'GET',
-        success: function (response) {
-            tasks = response;
-            console.log(tasks);
-            $.each(tasks,function(){
-                var task = this;
-                console.log(task);
-                var className = (task.isDone == 1) ? 'bg-success' : '';
-                var taskHtml = `<li class="list-group-item ${className}">
-                                    <div class="d-flex justify-content-between">
-                                    <div class="form-check form-switch">
-                                            <input class="form-check-input toggleStatus" data-taskid="${task.id}" type="checkbox" ${task.isDone == true ? 'checked' : ''} >
-                                            <label class="form-check-label" for="flexSwitchCheckDefault">${task.taskname}</label>
-                                    </div>
-                                        <div class="deleteTaskBtn" data-taskid="${task.id}">
-                                            <button class="btn btn-sm btn-outline btn-warning">X</button>
-                                        </div>
-                                    </div>  
-                                </div>
-                            </li>`;
-                $(tasksListHolder).append(taskHtml);            
-            })
-        }
-    });
+window.tasksListHolder = $('#tasksList');
+function buildTaskList(task){
+    //$(tasksListHolder).html('');
+    var className = (task.isDone == 1) ? 'bg-success' : '';
+    var taskHtml = `<li class="list-group-item ${className}">
+                        <div class="d-flex justify-content-between">
+                        <div class="form-check form-switch">
+                                <input class="form-check-input toggleStatus" data-taskid="${task.id}" type="checkbox" ${task.isDone == true ? 'checked' : ''} >
+                                <label class="form-check-label" for="flexSwitchCheckDefault">${task.taskname}</label>
+                        </div>
+                            <div class="deleteTaskBtn" data-taskid="${task.id}">
+                                <button class="btn btn-sm btn-outline btn-warning">X</button>
+                            </div>
+                        </div>  
+                    </div>
+                </li>`;
+    $(tasksListHolder).prepend(taskHtml); 
 }
 
 $(document).ready(function() {
     console.log('hi');
 
     // Get all task and build list
-    buildList();
+    //buildList();
 
 
     // Create new task
@@ -61,7 +46,8 @@ $(document).ready(function() {
             success: function (task) {
                 console.log('created:', task);
                 $(form)[0].reset();
-                buildList();
+                buildTaskList(task);
+                //buildList();
             },
             error: function (error) {
                     console.error(error);
@@ -72,7 +58,8 @@ $(document).ready(function() {
     // Delete task
     $('body').on('click','.deleteTaskBtn' ,function() {
         var taskId = $(this).data('taskid');
-        console.log("taskId :"+ taskId);
+        var liElement = $(this).closest('li');
+
         if(!taskId){
             return;
         }
@@ -82,7 +69,8 @@ $(document).ready(function() {
                 method: 'DELETE',
                 success : function(response){
                     console.log(response);
-                     buildList();
+                    $(liElement).remove();
+                     //buildList();
                 },
                 error: function (error) {
                     console.error(error);

@@ -2,12 +2,10 @@
 
 use Illuminate\Support\Facades\Route;
 
+use App\Http\Controllers\HomePageController;
 use App\Http\Controllers\TaskController;
 
-
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', [HomePageController::class, 'index']);
 
 
 Route::get('/tasks', [TaskController::class, 'index']);

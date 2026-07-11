@@ -23,7 +23,28 @@
                 </span>
             </div>
         </form>
-          <ul id="tasksList" class="list-group"></ul>
+          <ul id="tasksList" class="list-group">
+            @if($tasks->isEmpty())
+                <li class="list-group-item">No tasks available.</li>
+            @else
+                @foreach($tasks as $task)
+                    @php
+                        $className = $task->isDone ? 'bg-success' : '';
+                    @endphp
+                    <li class="list-group-item {{ $className }}">
+                            <div class="d-flex justify-content-between">
+                                 <div class="form-check form-switch">
+                                    <input class="form-check-input toggleStatus" data-taskid="{{$task->id}}" type="checkbox" {{ $task->isDone ? 'checked' : '' }}>
+                                    <label class="form-check-label" for="flexSwitchCheckDefault">{{ $task->taskname }}</label>
+                                </div>
+                                <div class="deleteTaskBtn" data-taskid="{{$task->id}}">
+                                    <button class="btn btn-sm btn-outline btn-warning">X</button>
+                                </div>
+                            </div>  
+                    </li>
+                @endforeach
+            @endif
+          </ul>
     </div>
 
 
